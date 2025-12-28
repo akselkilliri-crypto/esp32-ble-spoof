@@ -1,4 +1,3 @@
-yaml
 name: Build ESP32 Binary
 
 on: [push, workflow_dispatch]
