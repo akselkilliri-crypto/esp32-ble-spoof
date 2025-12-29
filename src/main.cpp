@@ -2,7 +2,8 @@
 #include <NimBLEDevice.h>
 #include <NimBLEAdvertising.h>
 
-uint8_t spoofedMac[6] = {0xC1, 0x23, 0x45, 0x67, 0x89, 0xAB}; // Статический рандом-адрес
+// Статический рандом-адрес: первый байт от 0xC0 до 0xFF
+uint8_t spoofedMac[6] = {0xC1, 0x23, 0x45, 0x67, 0x89, 0xAB};
 const char* deviceName = "FakeDevice";
 
 void setup() {
@@ -10,12 +11,12 @@ void setup() {
   delay(1000);
   Serial.println("Starting BLE spoof...");
 
-  // Устанавливаем MAC ДО init()
-  NimBLEAddress addr(spoofedMac, BLE_ADDR_RANDOM);
-  NimBLEDevice::setCustomGapAddress(addr);
+  // Передаём MAC-адрес прямо в init()
+  NimBLEDevice::init(NimBLEAddress(spoofedMac, BLE_ADDR_RANDOM), deviceName);
 
-  NimBLEDevice::init(deviceName);
-  NimBLEDevice::getAdvertising()->start();
+  NimBLEAdvertising* pAdv = NimBLEDevice::getAdvertising();
+  pAdv->start();
+
   Serial.println("Advertising as FakeDevice");
 }
 
